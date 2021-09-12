@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Book List Page</title>
+    <link href="Content/css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="row mt-5">
+        <div class="col-sm-3" style="margin-top:10px;margin-left:50px;">
+            <label>Search By Author : </label>
+            <input type="text" id="txtSearch" />
+            <input type="button" id="btnSearch" value="Search" />
+        </div>
+    </div>
+    <div id="divBooklist" class="mt-5">
+        <table id="booklist" class="table">
+            <thead>
+                <tr>
+                    <th style="width:60px;text-align:right;">Sr No</th>
+                    <th align='left'>Book Name</th>
+                    <th align='left'>Author Name</th>
+                    <th align='center'>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(document).on("click","#btnSearch", function () { getBookListByAuthor(); })
+            getBookList();
+        });
+
+        function getBookListByAuthor() {
+            var authorName = $("#txtSearch").val();
+            if (authorName.length > 0) {
+                var _url = "http://127.0.0.1:5000/booklist/" + authorName;
+                $.ajax({
+                    url: _url,
+                    type: 'get',
+                    crossDomain: true,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        $("#booklist tbody").html("");
+                        var len = response.length;
+                        for (var i = 0; i < len; i++) {
+                            var bookId = response[i].BookId;
+                            var bookName = response[i].BookName;
+                            var authorName = response[i].AuthorName;
+
+                            var tr_str = "<tr>" +
+                                "<td style='width:60px; text-align: right;'>" + (i + 1) + "</td>" +
+                                "<td align='left'>" + bookName + "</td>" +
+                                "<td align='left'>" + authorName + "</td>" +
+                                "<td align='center'><a href='/BookDetail.html?bookId=" + bookId + "' style='text-aligh=center;'>Detail</a></td>" +
+                                "</tr>";
+                            $("#booklist tbody").append(tr_str);
+                        }
+
+                    }
+                });
+            }
+            else {
+                getBookList();
+            }
+        }
+
+        function getBookList() {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/booklist',
+                type: 'get',
+                crossDomain: true,
+                dataType: 'JSON',
+                success: function (response) {
+                    $("#booklist tbody").html("");
+                    var len = response.length;
+                    for (var i = 0; i < len; i++) {
+                        var bookId = response[i].BookId;
+                        var bookName = response[i].BookName;
+                        var authorName = response[i].AuthorName;
+
+                        var tr_str = "<tr>" +
+                            "<td style='width:60px; text-align: right;'>" + (i + 1) + "</td>" +
+                            "<td align='left'>" + bookName + "</td>" +
+                            "<td align='left'>" + authorName + "</td>" +
+                            "<td align='center'><a href='/BookDetail.html?bookId=" + bookId + "' style='text-aligh=center;'>Detail</a></td>" +
+                            "</tr>";
+                        $("#booklist tbody").append(tr_str);
+                    }
+
+                }
+            });
+        }
+    </script>
+</body>
+</html>

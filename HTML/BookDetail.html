@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Book Detail Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    
+    <div class="row mt-1 p-2">
+        <h1><span id="book_name"></span> By <span id="author_name"></span></h1>    
+    </div>
+    <div class="row p-2">
+        <div class="col-xs-9 mt-5" style="width:80%; text-align:justify;">
+            <p id="detail" style="font-size:18px;"></p>
+        </div>
+    </div>
+    
+
+    <script>
+        $(document).ready(function () {
+            var bookId = parseInt(getParameterByName("bookId"));
+            var _url = "http://127.0.0.1:5000/bookdetail/" + bookId
+            if (bookId > 0) {
+                $.ajax({
+                    url: _url,
+                    type: 'get',
+                    crossDomain: true,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        if (response) {
+                            $("#book_name").text(response[0].BookName);
+                            $("#author_name").text(response[0].AuthorName);
+                            $("#detail").text(response[0].Details);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+    </script>
+</body>
+</html>
